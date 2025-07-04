@@ -23,9 +23,13 @@ import {
   X,
 } from "lucide-react"
 
+import { useActionState } from "react"
+
 export default function DeseffWebsite() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [activeSection, setActiveSection] = useState("hero")
+
+  const [formData, setFormData] = useState({ name: '', email: '', message: '' })
 
   const services = [
     { name: "Engineering Design Support", icon: Settings },
@@ -76,6 +80,17 @@ export default function DeseffWebsite() {
       element.scrollIntoView({ behavior: "smooth" })
     }
     setIsMenuOpen(false)
+  }
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value })
+  }
+
+  const handleContactSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    // Let the form submit to Formspree, then reset fields
+    setTimeout(() => {
+      setFormData({ name: '', email: '', message: '' })
+    }, 100)
   }
 
   return (
@@ -362,7 +377,7 @@ export default function DeseffWebsite() {
 
             <Card className="bg-white/50 border-[#546c44]/20 backdrop-blur-sm">
               <CardContent className="p-10">
-                <form className="space-y-8">
+                <form action="https://formspree.io/f/xyzjvvdd" method="POST" className="space-y-8" onSubmit={handleContactSubmit}>
                   <div className="grid md:grid-cols-2 gap-8">
                     <div className="space-y-3">
                       <Label htmlFor="name" className="text-[#546c44] font-semibold">
@@ -370,8 +385,12 @@ export default function DeseffWebsite() {
                       </Label>
                       <Input
                         id="name"
+                        name="name"
+                        required
                         placeholder="Your full name"
                         className="bg-white/70 border-[#546c44]/30 text-[#546c44] placeholder:text-[#546c44]/60 focus:border-[#3d4a2b] h-12"
+                        value={formData.name}
+                        onChange={handleInputChange}
                       />
                     </div>
                     <div className="space-y-3">
@@ -380,9 +399,13 @@ export default function DeseffWebsite() {
                       </Label>
                       <Input
                         id="email"
+                        name="email"
                         type="email"
+                        required
                         placeholder="your.email@example.com"
                         className="bg-white/70 border-[#546c44]/30 text-[#546c44] placeholder:text-[#546c44]/60 focus:border-[#3d4a2b] h-12"
+                        value={formData.email}
+                        onChange={handleInputChange}
                       />
                     </div>
                   </div>
@@ -392,15 +415,20 @@ export default function DeseffWebsite() {
                     </Label>
                     <Textarea
                       id="message"
+                      name="message"
+                      required
                       placeholder="Tell us about your project requirements, timeline, and any specific challenges you're facing..."
                       rows={6}
                       className="bg-white/70 border-[#546c44]/30 text-[#546c44] placeholder:text-[#546c44]/60 focus:border-[#3d4a2b] resize-none"
+                      value={formData.message}
+                      onChange={handleInputChange}
                     />
                   </div>
+
                   <Button
                     type="submit"
                     size="lg"
-                    className="w-full bg-[#546c44] hover:bg-[#3d4a2b] text-white font-semibold py-4 text-lg transition-all hover:scale-105"
+                    className="w-full bg-[#546c44] hover:bg-[#3d4a2b] text-white font-semibold py-4 text-lg transition-all hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
                   >
                     Send Message
                   </Button>
